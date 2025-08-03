@@ -1,0 +1,95 @@
+{# filepath: templates/category/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }} - Mon Blog{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_category_list') }}">Catégories</a></li>
+                <li class="breadcrumb-item active">{{ category.name }}</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="mb-4">{{ category.name }}</h1>
+                
+                {% if category.description %}
+                    <p class="lead text-muted">{{ category.description }}</p>
+                {% endif %}
+
+                {% if articles|length > 0 %}
+                    <p class="text-muted mb-4">{{ articles|length }} article{{ articles|length > 1 ? 's' : '' }}</p>
+                    
+                    <div class="row">
+                        {% for article in articles %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ article.title }}</h5>
+                                        <p class="card-text">
+                                            {{ article.content|length > 150 ? article.content|slice(0, 150) ~ '...' : article.content }}
+                                        </p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar"></i> {{ article.createdAt|date('d/m/Y') }}
+                                        </small>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-flex justify-content-between">
+                                            {% if article.slug %}
+                                                <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="btn btn-primary btn-sm">
+                                                    Lire la suite
+                                                </a>
+                                            {% else %}
+                                                <span class="btn btn-secondary btn-sm disabled">
+                                                    Slug manquant
+                                                </span>
+                                            {% endif %}
+                                            
+                                            {% if article.slug %}
+                                                <a href="{{ path('app_article_edit', {slug: article.slug}) }}" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            {% else %}
+                                                <span class="btn btn-outline-warning btn-sm disabled">
+                                                    <i class="fas fa-edit"></i>
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <h4>Aucun article</h4>
+                        <p>Cette catégorie ne contient aucun article pour le moment.</p>
+                        <a href="{{ path('app_article_new') }}" class="btn btn-primary">
+                            Créer un article dans cette catégorie
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Actions</h3>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ path('app_article_new') }}" class="btn btn-success mb-2 w-100">
+                            <i class="fas fa-plus"></i> Nouvel article
+                        </a>
+                        <a href="{{ path('app_category_list') }}" class="btn btn-outline-primary w-100">
+                            Toutes les catégories
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

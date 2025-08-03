@@ -2,16 +2,133 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <title>{% block title %}Mon Blog{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {% block stylesheets %}
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_home') }}">
+                    <i class="fas fa-blog"></i> Mon Blog
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_article_list') }}">Articles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_category_list') }}">Catégories</a>
+                        </li>
+                    </ul>
+                    
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_article_new') }}">
+                                <i class="fas fa-plus"></i> Nouvel article
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {% block body %}
+            <div class="container mt-5">
+                <div class="hero-section text-center mb-5">
+                    <h1 class="display-4">Bienvenue sur mon Blog</h1>
+                    <p class="lead">Découvrez mes derniers articles</p>
+                    <a href="{{ path('app_article_new') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus"></i> Créer votre premier article
+            </a>
+                </div>
+
+                <div class="row">
+                    <!-- Articles à gauche -->
+                    <div class="col-md-8">
+                        <h2 class="mb-4">Derniers articles</h2>
+                        
+                        {% if latest_articles %}
+                            <div class="row">
+                                {% for article in latest_articles %}
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ article.title }}</h5>
+                                                <p class="card-text">{{ article.content|length > 150 ? article.content|slice(0, 150) ~ '...' : article.content }}</p>
+                                                <small class="text-muted">{{ article.createdAt|date('d/m/Y') }}</small>
+                                            </div>
+                                            <div class="card-footer">
+                                                {% if article.slug %}
+                                                    <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="btn btn-primary btn-sm">Lire la suite</a>
+                                                {% else %}
+                                                    <span class="btn btn-secondary btn-sm disabled">Slug manquant</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Aucun article disponible pour le moment.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Sidebar à droite -->
+                    <div class="col-md-4">
+                        <h3 class="mb-3">Catégories</h3>
+                        {% if categories %}
+                            <div class="list-group">
+                                {% for category in categories %}
+                                    {% if category.slug %}
+                                        <a href="{{ path('app_category_show', {slug: category.slug}) }}" class="list-group-item list-group-item-action">
+                                            {{ category.name }}
+                                            <span class="badge bg-primary rounded-pill">{{ category.articles|length }}</span>
+                                        </a>
+                                    {% else %}
+                                        <span class="list-group-item list-group-item-action disabled">
+                                            {{ category.name }} (slug manquant)
+                                            <span class="badge bg-secondary rounded-pill">{{ category.articles|length }}</span>
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Aucune catégorie disponible.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+        
+        <footer class="bg-dark text-white mt-5 py-4 ">
+            <div class="container text-center">
+                <p>&copy; {{ 'now'|date('Y') }} Mon Blog - Créé avec Symfony</p>
+            </div>
+        </footer>
     </body>
 </html>

@@ -1,0 +1,58 @@
+{# filepath: templates/article/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un article - Mon Blog{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('app_article_list') }}">Articles</a></li>
+                        <li class="breadcrumb-item active">Nouveau</li>
+                    </ol>
+                </nav>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>Créer un nouvel article</h1>
+                    <a href="{{ path('app_article_list') }}" class="btn btn-outline-secondary">
+                        ← Retour aux articles
+                    </a>
+                </div>
+
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': true}}) }}
+                    <div class="mb-3">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.category) }}
+                        {{ form_widget(form.category) }}
+                        {{ form_errors(form.category) }}
+                        <div class="form-text">Sélectionnez une catégorie pour classer votre article</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.content) }}
+                        {{ form_widget(form.content) }}
+                        {{ form_errors(form.content) }}
+                        <div class="form-text">Rédigez le contenu complet de votre article</div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ path('app_article_list') }}" class="btn btn-secondary me-md-2">
+                            Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Créer l'article
+                        </button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

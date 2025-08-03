@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }} - Mon Blog{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                        {% if article.category %}
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('app_category_show', {slug: article.category.slug}) }}">
+                                    {{ article.category.name }}
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="breadcrumb-item active">{{ article.title }}</li>
+                    </ol>
+                </nav>
+
+                <article>
+                    <header class="mb-4">
+                        <h1 class="display-5">{{ article.title }}</h1>
+                        <div class="text-muted mb-3">
+                            <small>
+                                Publié le {{ article.createdAt|date('d/m/Y à H:i') }}
+                                {% if article.category %}
+                                    dans <a href="{{ path('app_category_show', {slug: article.category.slug}) }}" class="text-decoration-none">{{ article.category.name }}</a>
+                                {% endif %}
+                            </small>
+                        </div>
+                    </header>
+
+                    <div class="content">
+                        {{ article.content|nl2br }}
+                    </div>
+                </article>
+
+                <div class="mt-5">
+                    <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">
+                        ← Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.name }} - Mon Blog{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_category_list') }}">Catégories</a></li>
+                <li class="breadcrumb-item active">{{ category.name }}</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="mb-4">{{ category.name }}</h1>
+                
+                {% if category.description %}
+                    <p class="lead text-muted">{{ category.description }}</p>
+                {% endif %}
+
+                {% if articles|length > 0 %}
+                    <p class="text-muted mb-4">{{ articles|length }} article{{ articles|length > 1 ? 's' : '' }}</p>
+                    
+                    <div class="row">
+                        {% for article in articles %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ article.title }}</h5>
+                                        <p class="card-text">
+                                            {{ article.content|length > 150 ? article.content|slice(0, 150) ~ '...' : article.content }}
+                                        </p>
+                                        <small class="text-muted">{{ article.createdAt|date('d/m/Y') }}</small>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="btn btn-primary btn-sm">
+                                            Lire la suite
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <h4>Aucun article</h4>
+                        <p>Cette catégorie ne contient aucun article pour le moment.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <h3>Autres catégories</h3>
+                {# On pourrait ajouter une liste des autres catégories ici #}
+                <a href="{{ path('app_category_list') }}" class="btn btn-outline-primary">
+                    Voir toutes les catégories
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

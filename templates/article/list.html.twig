@@ -1,0 +1,68 @@
+{# filepath: templates/article/list.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Tous les articles - Mon Blog{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Tous les articles</h1>
+            <a href="{{ path('app_article_new') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Nouvel article
+            </a>
+        </div>
+
+        {% if articles|length > 0 %}
+            <p class="text-muted mb-4">{{ articles|length }} article{{ articles|length > 1 ? 's' : '' }} au total</p>
+            
+            <div class="row">
+                {% for article in articles %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ article.title }}</h5>
+                                {% if article.category %}
+                                    <small class="text-muted">
+                                        <i class="fas fa-folder"></i> {{ article.category.name }}
+                                    </small>
+                                {% endif %}
+                                <p class="card-text mt-2">
+                                    {{ article.content|length > 150 ? article.content|slice(0, 150) ~ '...' : article.content }}
+                                </p>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> {{ article.createdAt|date('d/m/Y à H:i') }}
+                                </small>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-between">
+                                    <a href="{{ path('app_article_show', {slug: article.slug}) }}" class="btn btn-primary btn-sm">
+                                        Lire la suite
+                                    </a>
+                                    <div>
+                                        {# <a href="{{ path('app_article_edit', {slug: article.slug}) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a> #}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <h4>Aucun article</h4>
+                <p>Il n'y a aucun article pour le moment.</p>
+                <a href="{{ path('app_article_new') }}" class="btn btn-primary">
+                    Créer le premier article
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">
+                ← Retour à l'accueil
+            </a>
+        </div>
+    </div>
+{% endblock %}
